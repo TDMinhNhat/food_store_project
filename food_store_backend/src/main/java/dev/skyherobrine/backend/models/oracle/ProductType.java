@@ -27,6 +27,11 @@ public class ProductType {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public ProductType(@NonNull String typeName, String description) {
+        this.typeName = typeName;
+        this.description = description;
+    }
+
     @PrePersist
     public void prePersist() {
         this.status = true;
