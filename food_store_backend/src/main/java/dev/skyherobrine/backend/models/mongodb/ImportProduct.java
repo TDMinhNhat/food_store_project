@@ -10,10 +10,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Document(collation = "ImportProducts")
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public class ImportProduct {
 
     @Id
@@ -30,4 +31,11 @@ public class ImportProduct {
     @Field(name = "created_at", targetType = FieldType.TIMESTAMP)
     private Timestamp createdAt;
 
+    public ImportProduct(Long id, String productId, String supplyName, Double quantity) {
+        this.id = id;
+        this.productId = productId;
+        this.supplyName = supplyName;
+        this.quantity = quantity;
+        this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+    }
 }
