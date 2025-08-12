@@ -15,16 +15,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
     
-      - name: Clean Maven Project
+      - name: Clean & Build Maven Project
         working-directory: food_store_backend
         run: |
-          echo "Starting Maven Clean..."
+          echo "Starting Maven Clean & Build..."
+          chmod +x mvnw
           ./mvnw clean package -DskipTests
-          echo "Clean Maven Project has done!"
-
-      - name: Build Maven Project
-        working-directory: food_store_backend
-        run: |
-          echo "Starting Maven Build..."
-          ./mvnw build package
-          echo "Build Maven Project has done!"
