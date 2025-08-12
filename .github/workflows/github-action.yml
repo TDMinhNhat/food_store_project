@@ -1,0 +1,30 @@
+name: Build and Test project
+on: 
+  push:
+    branches: ["develop"]
+jobs:
+  check-develop-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup Java Project
+        uses: actions/setup-java@v3.14.1
+        with: 
+          distribution: 'temurin'
+          java-version: '21'
+    
+      - name: Clean Maven Project
+        working-directory: food_store_backend
+        run: |
+          echo "Starting Maven Clean..."
+          ./mvnw clean package -DskipTests
+          echo "Clean Maven Project has done!"
+
+      - name: Build Maven Project
+        working-directory: food_store_backend
+        run: |
+          echo "Starting Maven Build..."
+          ./mvnw build package
+          echo "Build Maven Project has done!"
