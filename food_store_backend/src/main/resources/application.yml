@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: food_store_backend
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@//localhost:1521/foodstr
+    username: foodroot
+    password: 123456789
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+server:
+  port: 8888
