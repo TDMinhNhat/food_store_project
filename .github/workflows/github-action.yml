@@ -1,9 +1,13 @@
-name: Build and Test project
+name: CI/CD Workflows for Food Store Project
 on: 
   push:
-    branches: ["develop"]
+    branches:
+      - develop
+      - main
+
 jobs:
-  check-develop-branch:
+  develop-branch-jobs:
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -11,13 +15,44 @@ jobs:
 
       - name: Setup Java Project
         uses: actions/setup-java@v3.14.1
-        with: 
+        with:
           distribution: 'temurin'
           java-version: '21'
-    
-      - name: Clean & Build Maven Project
+          cache: maven
+
+      - name: Grant permissions mvnw executable
         working-directory: food_store_backend
-        run: |
-          echo "Starting Maven Clean & Build..."
-          chmod +x mvnw
-          ./mvnw clean package -DskipTests
+        run: chmod +x mvnw
+
+      - name: Run Tests
+        working-directory: food_store_backend
+        run: ./mvnw clean verify
+
+  main-branch-jobs:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup Java Project
+        uses: actions/setup-java@v3.14.1
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: maven
+
+      - name: Make mvnw executable
+        run: chmod +x ./mvnw
+
+      - name: Build JAR
+        run: ./mvnw clean package
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3.5.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+
+
