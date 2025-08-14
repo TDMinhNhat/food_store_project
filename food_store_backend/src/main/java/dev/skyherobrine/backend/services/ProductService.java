@@ -1,12 +1,15 @@
 package dev.skyherobrine.backend.services;
 
+import dev.skyherobrine.backend.models.mongodb.ProductDescription;
 import dev.skyherobrine.backend.models.oracle.Product;
 import dev.skyherobrine.backend.models.oracle.ProductPrice;
 import dev.skyherobrine.backend.projects.ProductProject;
+import dev.skyherobrine.backend.repositories.mongodb.ProductDescriptionRepository;
 import dev.skyherobrine.backend.repositories.oracle.ProductImageRepository;
 import dev.skyherobrine.backend.repositories.oracle.ProductPriceRepository;
 import dev.skyherobrine.backend.repositories.oracle.ProductRepository;
 import dev.skyherobrine.backend.repositories.oracle.ProductTypeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ public class ProductService {
     private final ProductTypeRepository productTypeRepository;
     private final ProductPriceRepository productPriceRepository;
     private final ProductImageRepository productImageRepository;
+    private final ProductDescriptionRepository productDescriptionRepository;
 
     private Function<Product, ProductProject> processToProductProject() {
         return item -> {
@@ -60,5 +64,9 @@ public class ProductService {
         return productRepository.findAllByProductType_TypeName(type, Pageable.ofSize(size).withPage(page)).stream().map(
                 processToProductProject()
         ).toList();
+    }
+
+    public ProductDescription getProductDescription(String productId) {
+        return productDescriptionRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("The product id with " + productId + " wasn't found!"));
     }
 }
