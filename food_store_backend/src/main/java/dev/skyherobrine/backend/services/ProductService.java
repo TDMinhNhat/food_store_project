@@ -3,12 +3,13 @@ package dev.skyherobrine.backend.services;
 import dev.skyherobrine.backend.models.mongodb.ProductDescription;
 import dev.skyherobrine.backend.models.oracle.Product;
 import dev.skyherobrine.backend.models.oracle.ProductPrice;
+import dev.skyherobrine.backend.models.oracle.User;
 import dev.skyherobrine.backend.projects.ProductProject;
+import dev.skyherobrine.backend.projects.ProductReviewProject;
+import dev.skyherobrine.backend.projects.UserProject;
 import dev.skyherobrine.backend.repositories.mongodb.ProductDescriptionRepository;
-import dev.skyherobrine.backend.repositories.oracle.ProductImageRepository;
-import dev.skyherobrine.backend.repositories.oracle.ProductPriceRepository;
-import dev.skyherobrine.backend.repositories.oracle.ProductRepository;
-import dev.skyherobrine.backend.repositories.oracle.ProductTypeRepository;
+import dev.skyherobrine.backend.repositories.mongodb.ProductReviewRepository;
+import dev.skyherobrine.backend.repositories.oracle.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -26,10 +27,11 @@ import java.util.function.Function;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductTypeRepository productTypeRepository;
     private final ProductPriceRepository productPriceRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductDescriptionRepository productDescriptionRepository;
+    private final ProductReviewRepository productReviewRepository;
+    private final UserRepository userRepository;
 
     private Function<Product, ProductProject> processToProductProject() {
         return item -> {
@@ -40,14 +42,26 @@ public class ProductService {
             result.setPrice(productPrice);
 
             result.setImages(productImageRepository.findAllByProduct_ProductId(item.getProductId()));
+
+            result.setReviews(productReviewRepository.findByProductIdAndStatusTrue(item.getProductId()).parallelStream().map(productReview -> {
+                ProductReviewProject review = new ProductReviewProject();
+                BeanUtils.copyProperties(productReview, review, "id", "status");
+
+                User userReview = userRepository.findByUserId(productReview.getUserId()).orElseThrow(() -> new EntityNotFoundException("The user id with " + productReview.getUserId() + " couldn't find review this product"));
+                UserProject userProject = new UserProject();
+                BeanUtils.copyProperties(userReview, userProject, "id", "address", "password", "updatedAt");
+                review.setUser(userProject);
+
+                return review;
+            }).toList());
             return result;
         };
     }
 
     public List<ProductProject> getAllProductsPage(int page, int size) {
-        return productRepository.findAll(Pageable.ofSize(size).withPage(page)).map(
+        return productRepository.findAll(Pageable.ofSize(size).withPage(page)).stream().parallel().map(
                 processToProductProject()
-        ).stream().toList();
+        ).toList();
     }
 
     public List<ProductProject> getAllProductsSort(Map<String, String> sorting) {
@@ -55,18 +69,14 @@ public class ProductService {
         sorting.forEach((key, value) -> {
             orders.add(new Sort.Order(Sort.Direction.valueOf(value), key));
         });
-        return productRepository.findAll(Sort.by(orders)).stream().map(
+        return productRepository.findAll(Sort.by(orders)).parallelStream().map(
                 processToProductProject()
         ).toList();
     }
 
     public List<ProductProject> getAllProductsByType(String type, Integer page, Integer size) {
-        return productRepository.findAllByProductType_TypeName(type, Pageable.ofSize(size).withPage(page)).stream().map(
+        return productRepository.findAllByProductType_TypeName(type, Pageable.ofSize(size).withPage(page)).parallelStream().map(
                 processToProductProject()
         ).toList();
-    }
-
-    public ProductDescription getProductDescription(String productId) {
-        return productDescriptionRepository.findById(productId).orElseThrow(() -> new EntityNotFoundException("The product id with " + productId + " wasn't found!"));
     }
 }

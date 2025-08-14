@@ -24,4 +24,5 @@ public class ProductProject {
     private ProductStatus status;
     private ProductPrice price;
     private List<ProductImage> images;
+    private List<ProductReviewProject> reviews;
 }

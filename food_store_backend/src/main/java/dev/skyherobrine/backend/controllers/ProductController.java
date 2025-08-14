@@ -71,19 +71,4 @@ public class ProductController {
     ) {
         return ResponseEntity.ok(productService.getAllProductsByType(type, page, size));
     }
-
-    @GetMapping("/{productId}/description")
-    @Operation(summary = "Get the description product follow the productId")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Get the product description", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ProductProject.class))
-            }),
-            @ApiResponse(responseCode = "404", description = "The productId wasn't found on database system"),
-            @ApiResponse(responseCode = "500", description = "The server return an error when executing")
-    })
-    public ResponseEntity<Object> getProductDescription(
-            @PathVariable("productId") String productId
-    ) {
-        return ResponseEntity.ok(productService.getProductDescription(productId));
-    }
 }
