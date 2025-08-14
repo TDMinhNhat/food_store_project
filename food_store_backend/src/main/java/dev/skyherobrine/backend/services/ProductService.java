@@ -43,6 +43,8 @@ public class ProductService {
 
             result.setImages(productImageRepository.findAllByProduct_ProductId(item.getProductId()));
 
+            result.setDescriptions(productDescriptionRepository.findById(item.getProductId()).orElse(new ProductDescription()).getDescriptions());
+
             result.setReviews(productReviewRepository.findByProductIdAndStatusTrue(item.getProductId()).parallelStream().map(productReview -> {
                 ProductReviewProject review = new ProductReviewProject();
                 BeanUtils.copyProperties(productReview, review, "id", "status");

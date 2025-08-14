@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
@@ -25,4 +26,5 @@ public class ProductProject {
     private ProductPrice price;
     private List<ProductImage> images;
     private List<ProductReviewProject> reviews;
+    private Map<String,String> descriptions;
 }
