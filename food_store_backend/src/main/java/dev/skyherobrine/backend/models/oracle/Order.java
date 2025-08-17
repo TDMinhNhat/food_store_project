@@ -13,13 +13,16 @@ public class Order {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "order_id", length = 50, nullable = false, unique = true) @NonNull
+    private String orderId;
+
     @ManyToOne @JoinColumn(name = "cust_id", nullable = false) @NonNull
     private User customer;
 
-    @ManyToOne @JoinColumn(name = "emp_id", nullable = false) @NonNull
+    @ManyToOne @JoinColumn(name = "emp_id") @NonNull
     private User employee;
 
-    @ManyToOne @JoinColumn(name = "ship_id", nullable = false) @NonNull
+    @ManyToOne @JoinColumn(name = "ship_id")
     private User shipper;
 
     @Enumerated(EnumType.ORDINAL)

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Set;
 
 @Entity @Table(name = "Products")
@@ -60,5 +61,13 @@ public class Product {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public Double getUpdatestPrice() {
+        return prices.stream().filter(item -> item.getId().getPriceDate().isBefore(LocalDateTime.now()))
+                .sorted(Comparator.comparing(o -> o.getId().getPriceDate()))
+                .toList()
+                .getLast()
+                .getPrice();
     }
 }
