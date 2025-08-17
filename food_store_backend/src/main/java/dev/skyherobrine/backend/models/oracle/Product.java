@@ -1,10 +1,13 @@
 package dev.skyherobrine.backend.models.oracle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.skyherobrine.backend.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.Set;
 
 @Entity @Table(name = "Products")
 @Getter @Setter
@@ -44,6 +47,10 @@ public class Product {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "id.product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<ProductPrice> prices;
+
     @PrePersist
     public void prePersist() {
         this.quantity = 0.0;
@@ -54,5 +61,13 @@ public class Product {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public Double getUpdatestPrice() {
+        return prices.stream().filter(item -> item.getId().getPriceDate().isBefore(LocalDateTime.now()))
+                .sorted(Comparator.comparing(o -> o.getId().getPriceDate()))
+                .toList()
+                .getLast()
+                .getPrice();
     }
 }

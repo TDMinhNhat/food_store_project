@@ -7,20 +7,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor @AllArgsConstructor
-@Getter @Setter
-public class UserProject {
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class UserProject implements Serializable {
     private String userId;
     private String firstName;
     private String lastName;
     private Boolean sex;
     private LocalDate birthDate;
     private String phoneNumber;
+    private Address address;
     private String image;
     private String email;
     private UserRole role;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
