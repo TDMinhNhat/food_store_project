@@ -16,7 +16,7 @@ public record ProductDescriptionDto(
         String productId,
 
         @Size(min = 1, message = "The property 'descriptions' must contain at least one description.")
-        List<Map<String, String>> descriptions
+        Map<String, String> descriptions
 ) implements Serializable {
 
     public ProductDescription toObject() {
