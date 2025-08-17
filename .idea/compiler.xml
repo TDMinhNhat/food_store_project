@@ -10,6 +10,8 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/development/apache-maven-3.9.11/repository/org/springframework/boot/spring-boot-configuration-processor/3.5.3/spring-boot-configuration-processor-3.5.3.jar" />
           <entry name="$USER_HOME$/development/apache-maven-3.9.11/repository/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$USER_HOME$/development/apache-maven-3.9.11/repository/org/springframework/boot/spring-boot-configuration-processor/3.5.3/spring-boot-configuration-processor-3.5.3.jar" />
+          <entry name="$USER_HOME$/development/apache-maven-3.9.11/repository/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="food_store_backend" />
       </profile>
