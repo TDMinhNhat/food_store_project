@@ -20,5 +20,5 @@ public class ProductDescription {
     @Field(name = "product_id")
     private String productId;
 
-    private List<Map<String,String>> descriptions;
+    private Map<String,String> descriptions;
 }
